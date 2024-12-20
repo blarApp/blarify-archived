@@ -11,3 +11,4 @@ README.md
 .venv
 .ruff_cache
 node_modules
+static

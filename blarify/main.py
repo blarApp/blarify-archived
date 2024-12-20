@@ -1,12 +1,12 @@
 from blarify.project_graph_creator import ProjectGraphCreator
 from blarify.project_file_explorer import ProjectFilesIterator
-from blarify.project_graph_updater import ProjectGraphUpdater, UpdatedFile
-from blarify.project_graph_diff_creator import ProjectGraphDiffCreator, FileDiff, ChangeType
+from blarify.project_graph_updater import ProjectGraphUpdater
+from blarify.project_graph_diff_creator import ProjectGraphDiffCreator
 from blarify.db_managers.neo4j_manager import Neo4jManager
 from blarify.code_references import LspQueryHelper
 from blarify.graph.graph_environment import GraphEnvironment
 from blarify.utils.file_remover import FileRemover
-
+import time
 import dotenv
 import os
 
@@ -37,7 +37,7 @@ def main(root_path: str = None, blarignore_path: str = None):
     nodes = graph.get_nodes_as_objects()
 
     print(f"Saving graph with {len(nodes)} nodes and {len(relationships)} relationships")
-    graph_manager.save_graph(nodes, relationships)
+    # graph_manager.save_graph(nodes, relationships)
     graph_manager.close()
 
     lsp_query_helper.shutdown_exit_close()
@@ -117,39 +117,14 @@ def delete_updated_files_from_neo4j(updated_files, db_manager: Neo4jManager):
 
 if __name__ == "__main__":
     dotenv.load_dotenv()
-    root_path = os.getenv("ROOT_PATH")
+    root_path = "/Users/berrazuriz/Desktop/Blar/repositories/blar-django-server/"
     blarignore_path = os.getenv("BLARIGNORE_PATH")
-    main(root_path=root_path, blarignore_path=blarignore_path)
-    main_diff(
-        file_diffs=[
-            FileDiff(
-                path="file:///home/juan/devel/blar/lsp-poc/blarify/graph/node/utils/node_factory.py",
-                diff_text="diff+++",
-                change_type=ChangeType.ADDED,
-            ),
-            FileDiff(
-                path="file:///home/juan/devel/blar/lsp-poc/blarify/graph/relationship/relationship_type.py",
-                diff_text="diff+++",
-                change_type=ChangeType.ADDED,
-            ),
-            FileDiff(
-                path="file:///home/juan/devel/blar/lsp-poc/blarify/graph/relationship/relationship_creator.py",
-                diff_text="diff+++",
-                change_type=ChangeType.DELETED,
-            ),
-        ],
-        root_uri=root_path,
+
+    start_time = time.time()
+    main(
+        root_path=root_path,
         blarignore_path=blarignore_path,
     )
-    main_update(
-        updated_files=[
-            UpdatedFile(
-                path="file:///home/juan/devel/blar/lsp-poc/blarify/graph/node/utils/node_factory.py",
-            ),
-            UpdatedFile(
-                path="file:///home/juan/devel/blar/lsp-poc/blarify/graph/relationship/relationship_type.py",
-            ),
-        ],
-        root_uri=root_path,
-        blarignore_path=blarignore_path,
-    )
+    end_time = time.time()
+
+    print(f"Execution time: {end_time - start_time} seconds")

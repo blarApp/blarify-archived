@@ -144,11 +144,11 @@ class ProjectGraphCreator:
 
     def create_relationship_from_references(self, file_nodes: List["Node"]) -> None:
         references_relationships = []
-        total_files = len(file_nodes)
+        # total_files = len(file_nodes)
 
         for index, file_node in enumerate(file_nodes):
-            start_time = time.time()
-            Logger.log(f"Processing file {file_node.name}: {index+1}/{total_files}")
+            # start_time = time.time()
+            # Logger.log(f"Processing file {file_node.name}: {index+1}/{total_files}")
 
             nodes = self.graph.get_nodes_by_path(file_node.path)
             for node in nodes:
@@ -159,12 +159,12 @@ class ProjectGraphCreator:
                 references_relationships.extend(
                     self.create_node_relationships(node=node, tree_sitter_helper=tree_sitter_helper)
                 )
-            end_time = time.time()
+            # end_time = time.time()
 
-            execution_time = end_time - start_time
-            Logger.log(
-                f"Execution time for {file_node.name}: {execution_time:.2f} seconds, relationship count: {len(references_relationships)}"
-            )
+            # execution_time = end_time - start_time
+            # Logger.log(
+            #     f"Execution time for {file_node.name}: {execution_time:.2f} seconds, relationship count: {len(references_relationships)}"
+            # )
         self.graph.add_references_relationships(references_relationships=references_relationships)
 
     def create_node_relationships(self, node: "Node", tree_sitter_helper: TreeSitterHelper) -> List["Relationship"]:

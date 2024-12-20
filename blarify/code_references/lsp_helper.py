@@ -5,9 +5,6 @@ from blarify.graph.node import DefinitionNode
 from .implemented_lsp import ImplementedLsp
 from blarify.code_hierarchy.languages import (
     PythonDefinitions,
-    JavascriptDefinitions,
-    RubyDefinitions,
-    TypescriptDefinitions,
     LanguageDefinitions,
 )
 from collections import ChainMap
@@ -35,9 +32,9 @@ class LspQueryHelper:
     def _create_extensions_to_lsp_servers(self):
         return ChainMap(
             self._create_extension_to_lsp_servers(PythonDefinitions, ImplementedLsp.JEDI_LANGUAGE_SERVER),
-            self._create_extension_to_lsp_servers(JavascriptDefinitions, ImplementedLsp.TYPESCRIPT_LANGUAGE_SERVER),
-            self._create_extension_to_lsp_servers(TypescriptDefinitions, ImplementedLsp.TYPESCRIPT_LANGUAGE_SERVER),
-            self._create_extension_to_lsp_servers(RubyDefinitions, ImplementedLsp.SOLARGRAPH),
+            # self._create_extension_to_lsp_servers(JavascriptDefinitions, ImplementedLsp.TYPESCRIPT_LANGUAGE_SERVER),
+            # self._create_extension_to_lsp_servers(TypescriptDefinitions, ImplementedLsp.TYPESCRIPT_LANGUAGE_SERVER),
+            # self._create_extension_to_lsp_servers(RubyDefinitions, ImplementedLsp.SOLARGRAPH),
         )
 
     def _create_extension_to_lsp_servers(self, language_definitions: LanguageDefinitions, lsp_server: ImplementedLsp):
@@ -53,6 +50,8 @@ class LspQueryHelper:
         lsp_caller.did_open(document_uri=file.uri_path, text=self._read_file(file.path), extension=file.extension)
 
     def get_lsp_caller_for_extension(self, extension: str) -> LspCaller:
+        if extension == ".js":
+            print("JS")
         try:
             return self.lsp_callers[self.extension_to_lsp_server[extension]]
         except KeyError:
